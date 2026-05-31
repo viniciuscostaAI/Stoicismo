@@ -1,0 +1,2 @@
+# Stoicismo
+Stoicismo
