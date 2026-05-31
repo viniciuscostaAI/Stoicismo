@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Meditações">
+<meta name="theme-color" content="#f4efe8">
+<title>Meditações - Marcus Aurelius</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Cinzel:wght@400&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f4efe8;
+    --bg2: #ece5db;
+    --sand: #d6cbba;
+    --clay: #9c8e7e;
+    --terracotta: #8b6f5e;
+    --ink: #38302a;
+    --ink-soft: #5f534a;
+    --sage: #7a8c76;
+    --white: #fbf8f4;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 20px 90px;
+    background-image:
+      radial-gradient(ellipse at 60% 0%, #ece3d6 0%, transparent 60%),
+      radial-gradient(ellipse at 10% 95%, #e4dbd0 0%, transparent 50%);
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 50px;
+    opacity: 0;
+    animation: fadeDown 1.1s ease forwards 0.2s;
+  }
+
+  .eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.4em;
+    color: var(--clay);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.4rem, 6vw, 3.8rem);
+    font-weight: 300;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+  }
+
+  .divider {
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--sand), transparent);
+    margin: 20px auto 0;
+  }
+
+  .medallion-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 56px;
+    opacity: 0;
+    animation: fadeUp 1.1s ease forwards 0.5s;
+  }
+
+  .medallion {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 34%, var(--white), var(--bg2));
+    border: 1.5px solid var(--sand);
+    box-shadow:
+      0 0 0 8px var(--bg),
+      0 0 0 10px var(--sand),
+      0 10px 40px rgba(140,110,90,0.14),
+      inset 0 1px 5px rgba(255,255,255,0.9);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    flex-shrink: 0;
+  }
+
+  .medallion:hover {
+    transform: scale(1.05);
+    box-shadow:
+      0 0 0 8px var(--bg),
+      0 0 0 10px var(--terracotta),
+      0 14px 48px rgba(140,110,90,0.22),
+      inset 0 1px 5px rgba(255,255,255,0.9);
+  }
+
+  .medallion:active { transform: scale(0.96); }
+
+  .medallion svg {
+    width: 82px;
+    height: 82px;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+  }
+  .medallion:hover svg { opacity: 1; }
+
+  .btn-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.64rem;
+    letter-spacing: 0.32em;
+    color: var(--clay);
+    text-transform: uppercase;
+  }
+
+  .quote-card, .breakdown-card {
+    width: 100%;
+    max-width: 720px;
+    padding: 42px 50px;
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .quote-card.visible, .breakdown-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .quote-card {
+    background: var(--white);
+    border: 1px solid var(--sand);
+    border-radius: 3px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 22px rgba(140,110,90,0.07);
+  }
+
+  .ref-row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 26px;
+  }
+
+  .ref-badge {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--terracotta);
+    letter-spacing: 0.02em;
+  }
+
+  .ref-text {
+    font-family: 'Cinzel', serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.28em;
+    color: var(--clay);
+    text-transform: uppercase;
+  }
+
+  .quote-text {
+    font-size: clamp(1.5rem, 3.4vw, 2rem);
+    line-height: 1.7;
+    color: var(--ink);
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  .quote-source {
+    margin-top: 26px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    color: var(--terracotta);
+    text-align: right;
+    opacity: 0.85;
+  }
+
+  .breakdown-card {
+    background: var(--bg2);
+    border: 1px solid var(--sand);
+    border-left: 3px solid var(--sage);
+    border-radius: 3px;
+    transition: opacity 0.7s ease 0.18s, transform 0.7s ease 0.18s;
+    box-shadow: 0 2px 18px rgba(140,110,90,0.05);
+  }
+
+  .card-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.32em;
+    color: var(--sage);
+    text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+
+  .breakdown-text {
+    font-size: clamp(1.3rem, 2.6vw, 1.55rem);
+    line-height: 1.95;
+    color: var(--ink-soft);
+    font-weight: 300;
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 1.5px;
+    height: 0.95em;
+    background: var(--terracotta);
+    vertical-align: text-bottom;
+    animation: blink 1s step-end infinite;
+    margin-left: 1px;
+    opacity: 0.7;
+  }
+
+  @keyframes fadeDown { from {opacity:0; transform:translateY(-18px);} to {opacity:1; transform:translateY(0);} }
+  @keyframes fadeUp { from {opacity:0; transform:translateY(18px);} to {opacity:1; transform:translateY(0);} }
+  @keyframes blink { 0%,100%{opacity:0.7} 50%{opacity:0} }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">Estoicismo</p>
+  <h1>Meditações</h1>
+  <div class="divider"></div>
+</header>
+
+<div class="medallion-wrap">
+  <button class="medallion" id="btn" title="Revelar dito">
+    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="40" cy="40" r="28" stroke="#9c8e7e" stroke-width="1" stroke-dasharray="3 3"/>
+      <path d="M18 40 Q27 24 40 22 Q53 24 62 40 Q53 56 40 58 Q27 56 18 40Z" stroke="#9c8e7e" stroke-width="0.9" fill="none" opacity="0.55"/>
+      <circle cx="40" cy="40" r="4.5" fill="#9c8e7e" opacity="0.8"/>
+      <path d="M40 18 L40 12 M40 62 L40 68 M18 40 L12 40 M62 40 L68 40" stroke="#9c8e7e" stroke-width="0.9" stroke-linecap="round" opacity="0.35"/>
+      <path d="M26 26 L22 22 M54 26 L58 22 M26 54 L22 58 M54 54 L58 58" stroke="#9c8e7e" stroke-width="0.7" stroke-linecap="round" opacity="0.22"/>
+    </svg>
+  </button>
+  <span class="btn-label">Revelar sabedoria</span>
+</div>
+
+<div class="quote-card" id="quoteCard">
+  <p class="quote-text" id="quoteText"></p>
+  <p class="quote-source" id="quoteSource"></p>
+</div>
+
+<div class="breakdown-card" id="breakdownCard">
+  <p class="card-label">O que Marcus quis dizer</p>
+  <p class="breakdown-text" id="breakdownText"></p>
+</div>
+
+<script>
+var QUOTES = [
+  {
+    livro: 4, dito: 3,
+    text: "Você tem poder sobre sua mente, não sobre os acontecimentos externos. Perceba isso e encontrará força.",
+    breakdown: "A força não vem de controlar o mundo, mas de governar a própria reação a ele. Os eventos chegam sem pedir licença; o que você faz com eles é inteiramente seu. Quando para de lutar contra o incontrolável e foca no que depende de você, encontra uma calma que nada externo pode tirar."
+  },
+  {
+    livro: 5, dito: 16,
+    text: "A alma torna-se tingida pela cor de seus pensamentos.",
+    breakdown: "Você se torna aquilo em que pensa repetidamente. Os pensamentos não são visitantes neutros: vão pintando o caráter, dia após dia. Cuidar do que ocupa a mente é, no fundo, cuidar de quem você está se tornando."
+  },
+  {
+    livro: 9, dito: 35,
+    text: "Perda nada mais é do que mudança, e mudança é o deleite da Natureza.",
+    breakdown: "Aquilo que chamamos de perda é só a natureza fazendo o que sempre fez: transformar uma coisa em outra. Nada se destrói, apenas se rearranja. Quando você vê a mudança como o ritmo natural do mundo, e não como uma agressão pessoal, o medo de perder afrouxa."
+  },
+  {
+    livro: 5, dito: 20,
+    text: "O obstáculo no caminho torna-se o caminho. O que obstrui a ação faz avançar a ação.",
+    breakdown: "Aquilo que bloqueia sua ação pode virar o próprio combustível dela. A dificuldade não é um desvio da vida virtuosa; é a ocasião exata para praticá-la. O que impede pode redirecionar, e o que atrapalha pode ensinar."
+  },
+  {
+    livro: 7, dito: 69,
+    text: "Viva como se cada dia pudesse ser o último: sem agitação, sem torpor, sem dissimulação.",
+    breakdown: "Saber que o tempo é finito não deve gerar pânico nem paralisia, mas clareza. Agir sem ansiedade, sem preguiça e sem fingimento é viver cada dia como ele merece. A morte como pano de fundo torna o presente mais honesto."
+  },
+  {
+    livro: 3, dito: 7,
+    text: "Nunca considere nada vantajoso se para isso você precisar quebrar sua palavra ou perder seu respeito próprio.",
+    breakdown: "Nenhum ganho vale o preço da própria integridade. Se para conseguir algo você precisa trair sua palavra ou se desrespeitar, esse algo já vem com prejuízo embutido. O verdadeiro lucro é continuar sendo alguém que você admira."
+  },
+  {
+    livro: 4, dito: 3,
+    text: "O universo é mudança; nossa vida é o que nossos pensamentos fazem dela.",
+    breakdown: "O mundo lá fora é fluxo constante e indiferente; o sentido nasce dentro, na forma como interpretamos o que acontece. A mesma situação pode ser tragédia ou aprendizado, dependendo do pensamento que a recebe. Você não escolhe os fatos, mas escolhe o que faz deles."
+  },
+  {
+    livro: 12, dito: 17,
+    text: "Se não é certo, não faça; se não é verdadeiro, não diga.",
+    breakdown: "Uma regra simples para a conduta: ação guiada pela justiça, fala guiada pela verdade. Antes de agir, pergunte se é correto; antes de falar, se é verdadeiro. Viver bem é, em grande parte, essa disciplina constante de filtro."
+  },
+  {
+    livro: 6, dito: 39,
+    text: "Aceite as coisas a que o destino te amarra e ame as pessoas com quem o destino te faz viver.",
+    breakdown: "Não escolhemos boa parte das circunstâncias nem das pessoas que cruzam nosso caminho. A sabedoria está em aceitar o que foi dado e, mais que tolerar, amar genuinamente quem está ao seu lado. Resistir ao próprio destino só multiplica o sofrimento; abraçá-lo é onde mora a paz."
+  },
+  {
+    livro: 9, dito: 13,
+    text: "Hoje escapei de toda circunstância opressora; ou melhor, expulsei-a de mim, pois ela não estava fora, mas dentro, nos meus julgamentos.",
+    breakdown: "O que nos oprime quase nunca é o fato em si, e sim a opinião que formamos sobre ele. A circunstância não estava do lado de fora: estava na sua cabeça, no julgamento que você fez. Retire o julgamento e a opressão desaparece junto."
+  },
+  {
+    livro: 4, dito: 3,
+    text: "Tudo que você ouve é uma opinião, não um fato. Tudo que você vê é uma perspectiva, não a verdade.",
+    breakdown: "O que chega até nós já vem filtrado por pontos de vista, inclusive o nosso. Confundir opinião com fato e perspectiva com verdade nos torna rígidos e cegos. Lembrar dessa distância gera humildade e abre espaço para enxergar melhor."
+  },
+  {
+    livro: 6, dito: 2,
+    text: "Quando acordar pela manhã, pense no precioso privilégio que é estar vivo: respirar, pensar, sentir, amar.",
+    breakdown: "Acordar não é garantido; é um presente que recebemos sem merecer. Começar o dia reconhecendo o privilégio de respirar, pensar e amar muda completamente o tom de tudo o que vem depois. A gratidão pela própria existência é o antídoto contra a indiferença."
+  },
+  {
+    livro: 10, dito: 16,
+    text: "Não perca mais tempo discutindo como deve ser um homem bom. Seja um.",
+    breakdown: "A virtude não se prova em debates, mas em atos. Gastar energia teorizando sobre o bem é fugir da única coisa que importa: praticá-lo. Pare de descrever a pessoa que deveria ser e simplesmente seja ela, agora."
+  },
+  {
+    livro: 4, dito: 35,
+    text: "Tudo é efêmero: aquele que lembra e aquilo que é lembrado.",
+    breakdown: "Não só as coisas passam: quem as guarda na memória também passa. A fama e a lembrança que tanto perseguimos são tão perecíveis quanto nós. Reconhecer isso liberta da vaidade e devolve o foco ao que importa de fato: viver bem agora."
+  }
+];
+
+var ROMAN = { 3:"III", 4:"IV", 5:"V", 6:"VI", 7:"VII", 9:"IX", 10:"X", 12:"XII" };
+
+var lastIndex = -1;
+var isLoading = false;
+
+var btn = document.getElementById('btn');
+var quoteCard = document.getElementById('quoteCard');
+var quoteText = document.getElementById('quoteText');
+var quoteSource = document.getElementById('quoteSource');
+var breakdownCard = document.getElementById('breakdownCard');
+var breakdownText = document.getElementById('breakdownText');
+
+function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+async function streamText(el, text, delay) {
+  el.innerHTML = '';
+  var cursor = document.createElement('span');
+  cursor.className = 'cursor';
+  el.appendChild(cursor);
+  for (var i = 0; i < text.length; i++) {
+    el.insertBefore(document.createTextNode(text[i]), cursor);
+    await wait(delay);
+  }
+  cursor.remove();
+}
+
+btn.addEventListener('click', async function () {
+  if (isLoading) return;
+  isLoading = true;
+
+  var idx;
+  do { idx = Math.floor(Math.random() * QUOTES.length); } while (idx === lastIndex && QUOTES.length > 1);
+  lastIndex = idx;
+  var q = QUOTES[idx];
+
+  quoteCard.classList.remove('visible');
+  breakdownCard.classList.remove('visible');
+  quoteText.textContent = '';
+  quoteSource.textContent = '';
+  breakdownText.textContent = '';
+
+  await wait(80);
+
+  quoteCard.classList.add('visible');
+  await wait(350);
+  await streamText(quoteText, q.text, 22);
+  quoteSource.textContent = '- Marcus Aurelius, Meditacoes ' + q.livro + '.' + q.dito;
+
+  breakdownCard.classList.add('visible');
+  await wait(300);
+  await streamText(breakdownText, q.breakdown, 14);
+
+  isLoading = false;
+});
+</script>
+</body>
+</html>
