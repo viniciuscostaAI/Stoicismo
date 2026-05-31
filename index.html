@@ -83,6 +83,13 @@
   .fav-item{position:relative}
   .empty{text-align:center;color:var(--clay);font-size:1.3rem;font-style:italic;font-weight:300;padding:40px 10px;line-height:1.6}
 
+  .sync-row{display:flex;gap:10px;margin-top:24px;padding-top:18px;border-top:1px solid var(--sand);justify-content:center}
+  .sync-btn{display:inline-flex;align-items:center;gap:6px;background:var(--white);border:1px solid var(--sand);border-radius:999px;padding:8px 16px;cursor:pointer;font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--clay);transition:color .2s ease,border-color .2s ease,transform .2s ease}
+  .sync-btn:hover{color:var(--terracotta);border-color:var(--terracotta);transform:translateY(-1px)}
+  .sync-btn:active{transform:scale(.97)}
+  .sync-btn svg{width:13px;height:13px}
+  .sync-msg{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--sage);text-align:center;margin-top:12px;font-style:italic}
+
   @keyframes fadeDown{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
   @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 </style>
@@ -128,6 +135,17 @@
       <button class="close-btn" id="closeBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div id="favList"></div>
+    <div class="sync-row">
+      <button class="sync-btn" id="exportBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span id="exportLabel">Exportar</span>
+      </button>
+      <button class="sync-btn" id="importBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span id="importLabel">Importar</span>
+      </button>
+    </div>
+    <div class="sync-msg" id="syncMsg"></div>
   </div>
 </div>
 
@@ -166,8 +184,8 @@ var PHIL=[
 ];
 
 var LABELS={
-  pt:{eyebrow:"Estoicismo",btnL:"Revelar sabedoria",cardL:"O que ele quis dizer",listen:"Ouvir",stop:"Parar",favL:"Favoritos",panelT:"Meus Favoritos",empty:"Você ainda não salvou nenhum dito. Toque na estrela para guardá-lo aqui.",langBtn:"EN"},
-  en:{eyebrow:"Stoicism",btnL:"Reveal wisdom",cardL:"What he meant",listen:"Listen",stop:"Stop",favL:"Favorites",panelT:"My Favorites",empty:"No quotes saved yet. Tap the star on a quote to save it here.",langBtn:"PT"}
+  pt:{eyebrow:"Estoicismo",btnL:"Revelar sabedoria",cardL:"O que ele quis dizer",listen:"Ouvir",stop:"Parar",favL:"Favoritos",panelT:"Meus Favoritos",empty:"Você ainda não salvou nenhum dito. Toque na estrela para guardá-lo aqui.",langBtn:"EN",exportL:"Exportar",importL:"Importar",exported:"Copiado! Cole num Notes ou email para guardar.",importPrompt:"Cole o código dos favoritos:",imported:"Favoritos importados!",importErr:"Código inválido. Verifique e tente novamente."},
+  en:{eyebrow:"Stoicism",btnL:"Reveal wisdom",cardL:"What he meant",listen:"Listen",stop:"Stop",favL:"Favorites",panelT:"My Favorites",empty:"No quotes saved yet. Tap the star on a quote to save it here.",langBtn:"PT",exportL:"Export",importL:"Import",exported:"Copied! Paste it in Notes or email to keep it safe.",importPrompt:"Paste your favorites code:",imported:"Favorites imported!",importErr:"Invalid code. Check and try again."}
 };
 
 function findQuote(id){for(var p=0;p<PHIL.length;p++){var qs=PHIL[p].quotes;for(var i=0;i<qs.length;i++){if(qs[i].id===id)return{phil:PHIL[p],quote:qs[i]};}}return null;}
@@ -262,7 +280,38 @@ function renderFavs(){
   }
 }
 
-favOpen.addEventListener('click',function(){renderFavs();overlay.classList.add('open');});
+var exportBtn=document.getElementById('exportBtn');
+var importBtn=document.getElementById('importBtn');
+var exportLabel=document.getElementById('exportLabel');
+var importLabel=document.getElementById('importLabel');
+var syncMsg=document.getElementById('syncMsg');
+
+function updateSyncLabels(){var L=LABELS[lang];exportLabel.textContent=L.exportL;importLabel.textContent=L.importL;}
+
+exportBtn.addEventListener('click',function(){
+  syncMsg.textContent='';
+  if(favs.length===0){syncMsg.textContent=LABELS[lang].empty;return;}
+  var code=favs.join(',');
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(code).then(function(){syncMsg.textContent=LABELS[lang].exported;}).catch(function(){prompt(LABELS[lang].exported,code);});
+  }else{prompt(LABELS[lang].exported,code);}
+});
+
+importBtn.addEventListener('click',function(){
+  syncMsg.textContent='';
+  var code=prompt(LABELS[lang].importPrompt);
+  if(!code||!code.trim())return;
+  var ids=code.trim().split(',');
+  var valid=[];
+  for(var i=0;i<ids.length;i++){var id=ids[i].trim();if(id&&findQuote(id))valid.push(id);}
+  if(valid.length===0){syncMsg.textContent=LABELS[lang].importErr;return;}
+  for(var j=0;j<valid.length;j++){if(favs.indexOf(valid[j])<0)favs.push(valid[j]);}
+  persistFavs();updateFavCount();renderFavs();updateSyncLabels();
+  if(currentQuote)updateStarState();
+  syncMsg.textContent=LABELS[lang].imported+' ('+valid.length+')';
+});
+
+favOpen.addEventListener('click',function(){renderFavs();updateSyncLabels();syncMsg.textContent='';overlay.classList.add('open');});
 closeBtn.addEventListener('click',function(){overlay.classList.remove('open');});
 overlay.addEventListener('click',function(ev){if(ev.target===overlay)overlay.classList.remove('open');});
 
