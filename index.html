@@ -5,564 +5,268 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Meditações">
+<meta name="apple-mobile-web-app-title" content="Stoicism">
 <meta name="theme-color" content="#f4efe8">
-<title>Meditações - Marcus Aurelius</title>
+<title>Stoicism</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Cinzel:wght@400&display=swap');
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#f4efe8;--bg2:#ece5db;--sand:#d6cbba;--clay:#9c8e7e;--terracotta:#8b6f5e;--ink:#38302a;--ink-soft:#5f534a;--sage:#7a8c76;--white:#fbf8f4;--gold:#b8924e}
+  body{background-color:var(--bg);color:var(--ink);font-family:'Cormorant Garamond',Georgia,serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:60px 20px 90px;background-image:radial-gradient(ellipse at 60% 0%,#ece3d6 0%,transparent 60%),radial-gradient(ellipse at 10% 95%,#e4dbd0 0%,transparent 50%)}
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  .top-bar{position:fixed;top:calc(16px + env(safe-area-inset-top));left:calc(16px + env(safe-area-inset-left));right:calc(16px + env(safe-area-inset-right));z-index:20;display:flex;justify-content:space-between;pointer-events:none}
+  .top-btn{pointer-events:auto;display:inline-flex;align-items:center;gap:8px;background:var(--white);border:1px solid var(--sand);border-radius:999px;padding:9px 16px;cursor:pointer;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--terracotta);box-shadow:0 2px 10px rgba(140,110,90,0.12);transition:transform .2s ease,box-shadow .2s ease}
+  .top-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(140,110,90,0.18)}
+  .top-btn svg{width:14px;height:14px}
+  .fav-count{background:var(--terracotta);color:var(--white);border-radius:999px;min-width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:0.8rem;padding:0 5px}
 
-  :root {
-    --bg: #f4efe8;
-    --bg2: #ece5db;
-    --sand: #d6cbba;
-    --clay: #9c8e7e;
-    --terracotta: #8b6f5e;
-    --ink: #38302a;
-    --ink-soft: #5f534a;
-    --sage: #7a8c76;
-    --white: #fbf8f4;
-    --gold: #b8924e;
-  }
+  header{text-align:center;margin-bottom:50px;margin-top:24px;opacity:0;animation:fadeDown 1.1s ease forwards .2s}
+  .eyebrow{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.35em;color:var(--clay);text-transform:uppercase;margin-bottom:14px}
+  h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,6vw,3.8rem);font-weight:300;color:var(--ink);letter-spacing:.04em;line-height:1.1;cursor:pointer;transition:color .2s ease}
+  h1:hover{color:var(--terracotta)}
+  .toggle-hint{font-size:.35em;color:var(--clay);margin-left:6px;vertical-align:middle;display:inline-block;transition:transform .2s ease}
+  h1:hover .toggle-hint{transform:translateY(2px)}
+  .divider{width:80px;height:1px;background:linear-gradient(to right,transparent,var(--sand),transparent);margin:20px auto 0}
 
-  body {
-    background-color: var(--bg);
-    color: var(--ink);
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 60px 20px 90px;
-    background-image:
-      radial-gradient(ellipse at 60% 0%, #ece3d6 0%, transparent 60%),
-      radial-gradient(ellipse at 10% 95%, #e4dbd0 0%, transparent 50%);
-  }
+  .medallion-wrap{display:flex;flex-direction:column;align-items:center;gap:18px;margin-bottom:56px;opacity:0;animation:fadeUp 1.1s ease forwards .5s}
+  .medallion{width:180px;height:180px;border-radius:50%;background:radial-gradient(circle at 38% 34%,var(--white),var(--bg2));border:1.5px solid var(--sand);box-shadow:0 0 0 8px var(--bg),0 0 0 10px var(--sand),0 10px 40px rgba(140,110,90,.14),inset 0 1px 5px rgba(255,255,255,.9);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .35s ease,box-shadow .35s ease;flex-shrink:0}
+  .medallion:hover{transform:scale(1.05);box-shadow:0 0 0 8px var(--bg),0 0 0 10px var(--terracotta),0 14px 48px rgba(140,110,90,.22),inset 0 1px 5px rgba(255,255,255,.9)}
+  .medallion:active{transform:scale(.96)}
+  .medallion svg{width:82px;height:82px;opacity:.7;transition:opacity .3s}
+  .medallion:hover svg{opacity:1}
+  .btn-label{font-family:'Cinzel',serif;font-size:.64rem;letter-spacing:.32em;color:var(--clay);text-transform:uppercase}
 
-  /* Favoritos button (fixed top-right) */
-  .fav-open {
-    position: fixed;
-    top: calc(16px + env(safe-area-inset-top));
-    right: calc(16px + env(safe-area-inset-right));
-    z-index: 20;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--white);
-    border: 1px solid var(--sand);
-    border-radius: 999px;
-    padding: 9px 16px;
-    cursor: pointer;
-    font-family: 'Cinzel', serif;
-    font-size: 0.6rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--terracotta);
-    box-shadow: 0 2px 10px rgba(140,110,90,0.12);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  .fav-open:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(140,110,90,0.18); }
-  .fav-open svg { width: 14px; height: 14px; }
-  .fav-count {
-    background: var(--terracotta);
-    color: var(--white);
-    border-radius: 999px;
-    min-width: 18px;
-    height: 18px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 0.8rem;
-    padding: 0 5px;
-  }
+  .quote-card,.breakdown-card{width:100%;max-width:720px;padding:42px 50px;opacity:0;transform:translateY(14px);transition:opacity .7s ease,transform .7s ease}
+  .quote-card.visible,.breakdown-card.visible{opacity:1;transform:translateY(0)}
+  .quote-card{background:var(--white);border:1px solid var(--sand);border-radius:3px;margin-bottom:22px;box-shadow:0 2px 22px rgba(140,110,90,.07);position:relative}
+  .star-btn{position:absolute;top:26px;right:28px;background:none;border:none;cursor:pointer;padding:4px;line-height:0;transition:transform .2s ease}
+  .star-btn:hover{transform:scale(1.15)}.star-btn:active{transform:scale(.9)}
+  .star-btn svg{width:26px;height:26px}
+  .star-btn .star-shape{fill:none;stroke:var(--clay);stroke-width:1.5;transition:fill .25s ease,stroke .25s ease}
+  .star-btn.active .star-shape{fill:var(--gold);stroke:var(--gold)}
+  .quote-text{font-size:clamp(1.5rem,3.4vw,2rem);line-height:1.7;color:var(--ink);font-style:italic;font-weight:300;padding-right:30px}
+  .quote-source{margin-top:26px;font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.16em;color:var(--terracotta);text-align:right;opacity:.85}
 
-  header {
-    text-align: center;
-    margin-bottom: 50px;
-    margin-top: 24px;
-    opacity: 0;
-    animation: fadeDown 1.1s ease forwards 0.2s;
-  }
+  .breakdown-card{background:var(--bg2);border:1px solid var(--sand);border-left:3px solid var(--sage);border-radius:3px;transition:opacity .7s ease .18s,transform .7s ease .18s;box-shadow:0 2px 18px rgba(140,110,90,.05)}
+  .card-label{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.32em;color:var(--sage);text-transform:uppercase;margin-bottom:22px}
+  .breakdown-text{font-size:clamp(1.3rem,2.6vw,1.55rem);line-height:1.95;color:var(--ink-soft);font-weight:300}
+  .listen-btn{display:inline-flex;align-items:center;gap:9px;margin-top:28px;background:var(--white);border:1px solid var(--sand);border-radius:999px;padding:10px 20px;cursor:pointer;font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--sage);transition:transform .2s ease,box-shadow .2s ease,color .2s ease,border-color .2s ease}
+  .listen-btn:hover{transform:translateY(-1px);box-shadow:0 3px 12px rgba(140,110,90,.14)}
+  .listen-btn:active{transform:scale(.97)}
+  .listen-btn svg{width:16px;height:16px}
+  .listen-btn.playing{color:var(--terracotta);border-color:var(--terracotta)}
 
-  .eyebrow {
-    font-family: 'Cinzel', serif;
-    font-size: 0.62rem;
-    letter-spacing: 0.4em;
-    color: var(--clay);
-    text-transform: uppercase;
-    margin-bottom: 14px;
-  }
+  .overlay{position:fixed;inset:0;z-index:50;background:rgba(56,48,42,.45);backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;padding:calc(40px + env(safe-area-inset-top)) 16px 40px;overflow-y:auto}
+  .overlay.open{display:flex}
+  .panel{background:var(--bg);border:1px solid var(--sand);border-radius:6px;width:100%;max-width:720px;padding:34px 34px 40px;box-shadow:0 20px 60px rgba(56,48,42,.3);animation:panelIn .35s ease}
+  @keyframes panelIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;padding-bottom:18px;border-bottom:1px solid var(--sand)}
+  .panel-title{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--terracotta)}
+  .close-btn{background:none;border:none;cursor:pointer;padding:6px;line-height:0;color:var(--clay);transition:color .2s ease,transform .2s ease}
+  .close-btn:hover{color:var(--ink);transform:rotate(90deg)}
+  .close-btn svg{width:20px;height:20px}
 
-  h1 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2.4rem, 6vw, 3.8rem);
-    font-weight: 300;
-    color: var(--ink);
-    letter-spacing: 0.04em;
-    line-height: 1.1;
-  }
+  .fav-item{padding:18px 0;border-bottom:1px solid var(--sand)}
+  .fav-item:last-child{border-bottom:none}
+  .fav-head{display:flex;align-items:flex-start;cursor:pointer;gap:8px}
+  .fav-body{flex:1}
+  .fav-ref{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--clay);margin-bottom:6px}
+  .fav-quote{font-size:1.25rem;font-style:italic;font-weight:300;line-height:1.55;color:var(--ink);padding-right:32px}
+  .fav-chevron{flex-shrink:0;width:18px;height:18px;color:var(--clay);transition:transform .2s ease;margin-top:4px}
+  .fav-item.expanded .fav-chevron{transform:rotate(180deg)}
+  .fav-break{display:none;font-size:1.05rem;font-weight:300;line-height:1.7;color:var(--ink-soft);margin-top:14px;padding-left:2px;border-left:2px solid var(--sage);padding-left:14px}
+  .fav-item.expanded .fav-break{display:block}
+  .fav-remove{position:absolute;top:18px;right:0;background:none;border:none;cursor:pointer;padding:4px;line-height:0;transition:transform .2s ease}
+  .fav-remove:hover{transform:scale(1.15)}
+  .fav-remove svg{width:20px;height:20px}
+  .fav-remove .star-shape{fill:var(--gold);stroke:var(--gold)}
+  .fav-item{position:relative}
+  .empty{text-align:center;color:var(--clay);font-size:1.3rem;font-style:italic;font-weight:300;padding:40px 10px;line-height:1.6}
 
-  .divider {
-    width: 80px;
-    height: 1px;
-    background: linear-gradient(to right, transparent, var(--sand), transparent);
-    margin: 20px auto 0;
-  }
-
-  .medallion-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 18px;
-    margin-bottom: 56px;
-    opacity: 0;
-    animation: fadeUp 1.1s ease forwards 0.5s;
-  }
-
-  .medallion {
-    width: 180px;
-    height: 180px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 38% 34%, var(--white), var(--bg2));
-    border: 1.5px solid var(--sand);
-    box-shadow:
-      0 0 0 8px var(--bg),
-      0 0 0 10px var(--sand),
-      0 10px 40px rgba(140,110,90,0.14),
-      inset 0 1px 5px rgba(255,255,255,0.9);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.35s ease, box-shadow 0.35s ease;
-    flex-shrink: 0;
-  }
-  .medallion:hover {
-    transform: scale(1.05);
-    box-shadow:
-      0 0 0 8px var(--bg),
-      0 0 0 10px var(--terracotta),
-      0 14px 48px rgba(140,110,90,0.22),
-      inset 0 1px 5px rgba(255,255,255,0.9);
-  }
-  .medallion:active { transform: scale(0.96); }
-  .medallion svg { width: 82px; height: 82px; opacity: 0.7; transition: opacity 0.3s; }
-  .medallion:hover svg { opacity: 1; }
-
-  .btn-label {
-    font-family: 'Cinzel', serif;
-    font-size: 0.64rem;
-    letter-spacing: 0.32em;
-    color: var(--clay);
-    text-transform: uppercase;
-  }
-
-  .quote-card, .breakdown-card {
-    width: 100%;
-    max-width: 720px;
-    padding: 42px 50px;
-    opacity: 0;
-    transform: translateY(14px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-  .quote-card.visible, .breakdown-card.visible { opacity: 1; transform: translateY(0); }
-
-  .quote-card {
-    background: var(--white);
-    border: 1px solid var(--sand);
-    border-radius: 3px;
-    margin-bottom: 22px;
-    box-shadow: 0 2px 22px rgba(140,110,90,0.07);
-    position: relative;
-  }
-
-  /* Star toggle on quote card */
-  .star-btn {
-    position: absolute;
-    top: 26px;
-    right: 28px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 4px;
-    line-height: 0;
-    transition: transform 0.2s ease;
-  }
-  .star-btn:hover { transform: scale(1.15); }
-  .star-btn:active { transform: scale(0.9); }
-  .star-btn svg { width: 26px; height: 26px; }
-  .star-btn .star-shape { fill: none; stroke: var(--clay); stroke-width: 1.5; transition: fill 0.25s ease, stroke 0.25s ease; }
-  .star-btn.active .star-shape { fill: var(--gold); stroke: var(--gold); }
-
-  .quote-text {
-    font-size: clamp(1.5rem, 3.4vw, 2rem);
-    line-height: 1.7;
-    color: var(--ink);
-    font-style: italic;
-    font-weight: 300;
-    padding-right: 30px;
-  }
-
-  .quote-source {
-    margin-top: 26px;
-    font-family: 'Cinzel', serif;
-    font-size: 0.62rem;
-    letter-spacing: 0.16em;
-    color: var(--terracotta);
-    text-align: right;
-    opacity: 0.85;
-  }
-
-  .breakdown-card {
-    background: var(--bg2);
-    border: 1px solid var(--sand);
-    border-left: 3px solid var(--sage);
-    border-radius: 3px;
-    transition: opacity 0.7s ease 0.18s, transform 0.7s ease 0.18s;
-    box-shadow: 0 2px 18px rgba(140,110,90,0.05);
-  }
-
-  .card-label {
-    font-family: 'Cinzel', serif;
-    font-size: 0.58rem;
-    letter-spacing: 0.32em;
-    color: var(--sage);
-    text-transform: uppercase;
-    margin-bottom: 22px;
-  }
-
-  .breakdown-text {
-    font-size: clamp(1.3rem, 2.6vw, 1.55rem);
-    line-height: 1.95;
-    color: var(--ink-soft);
-    font-weight: 300;
-  }
-
-  .cursor {
-    display: inline-block;
-    width: 1.5px;
-    height: 0.95em;
-    background: var(--terracotta);
-    vertical-align: text-bottom;
-    animation: blink 1s step-end infinite;
-    margin-left: 1px;
-    opacity: 0.7;
-  }
-
-  /* Favorites overlay */
-  .overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 50;
-    background: rgba(56,48,42,0.45);
-    backdrop-filter: blur(3px);
-    display: none;
-    align-items: flex-start;
-    justify-content: center;
-    padding: calc(40px + env(safe-area-inset-top)) 16px 40px;
-    overflow-y: auto;
-  }
-  .overlay.open { display: flex; }
-
-  .panel {
-    background: var(--bg);
-    border: 1px solid var(--sand);
-    border-radius: 6px;
-    width: 100%;
-    max-width: 720px;
-    padding: 34px 34px 40px;
-    box-shadow: 0 20px 60px rgba(56,48,42,0.3);
-    animation: panelIn 0.35s ease;
-  }
-  @keyframes panelIn { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
-
-  .panel-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 28px;
-    padding-bottom: 18px;
-    border-bottom: 1px solid var(--sand);
-  }
-  .panel-title {
-    font-family: 'Cinzel', serif;
-    font-size: 0.72rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--terracotta);
-  }
-  .close-btn {
-    background: none; border: none; cursor: pointer; padding: 6px; line-height: 0;
-    color: var(--clay); transition: color 0.2s ease, transform 0.2s ease;
-  }
-  .close-btn:hover { color: var(--ink); transform: rotate(90deg); }
-  .close-btn svg { width: 20px; height: 20px; }
-
-  .fav-item {
-    padding: 22px 0;
-    border-bottom: 1px solid var(--sand);
-    position: relative;
-  }
-  .fav-item:last-child { border-bottom: none; }
-  .fav-ref {
-    font-family: 'Cinzel', serif;
-    font-size: 0.55rem;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: var(--clay);
-    margin-bottom: 10px;
-  }
-  .fav-quote {
-    font-size: 1.4rem;
-    font-style: italic;
-    font-weight: 300;
-    line-height: 1.6;
-    color: var(--ink);
-    padding-right: 36px;
-  }
-  .fav-break {
-    font-size: 1.1rem;
-    font-weight: 300;
-    line-height: 1.7;
-    color: var(--ink-soft);
-    margin-top: 12px;
-  }
-  .fav-remove {
-    position: absolute;
-    top: 22px;
-    right: 0;
-    background: none; border: none; cursor: pointer; padding: 4px; line-height: 0;
-    transition: transform 0.2s ease;
-  }
-  .fav-remove:hover { transform: scale(1.15); }
-  .fav-remove svg { width: 22px; height: 22px; }
-  .fav-remove .star-shape { fill: var(--gold); stroke: var(--gold); }
-
-  .empty {
-    text-align: center;
-    color: var(--clay);
-    font-size: 1.3rem;
-    font-style: italic;
-    font-weight: 300;
-    padding: 40px 10px;
-    line-height: 1.6;
-  }
-
-  @keyframes fadeDown { from {opacity:0; transform:translateY(-18px);} to {opacity:1; transform:translateY(0);} }
-  @keyframes fadeUp { from {opacity:0; transform:translateY(18px);} to {opacity:1; transform:translateY(0);} }
-  @keyframes blink { 0%,100%{opacity:0.7} 50%{opacity:0} }
+  @keyframes fadeDown{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
-
-<button class="fav-open" id="favOpen">
-  <svg viewBox="0 0 24 24"><path class="star-shape" d="M12 .9l3.3 6.7 7.4 1-5.4 5.2 1.3 7.3L12 18.9 5.4 21.1l1.3-7.3L1.3 8.6l7.4-1z"/></svg>
-  <span>Favoritos</span>
-  <span class="fav-count" id="favCount">0</span>
-</button>
-
+<div class="top-bar">
+  <button class="top-btn" id="langBtn">EN</button>
+  <button class="top-btn" id="favOpen">
+    <svg viewBox="0 0 24 24"><path class="star-shape" d="M12 .9l3.3 6.7 7.4 1-5.4 5.2 1.3 7.3L12 18.9 5.4 21.1l1.3-7.3L1.3 8.6l7.4-1z" fill="#b8924e" stroke="#b8924e"/></svg>
+    <span id="favLabel">Favoritos</span>
+    <span class="fav-count" id="favCount">0</span>
+  </button>
+</div>
 <header>
-  <p class="eyebrow">Estoicismo</p>
-  <h1>Meditações</h1>
+  <p class="eyebrow" id="eyebrow">Estoicismo</p>
+  <h1 id="titleH1">Meditações<span class="toggle-hint" id="thint">&#9662;</span></h1>
+  <p class="eyebrow" id="philName" style="margin-top:10px;font-size:.5rem;opacity:.6">Marcus Aurelius</p>
   <div class="divider"></div>
 </header>
-
 <div class="medallion-wrap">
-  <button class="medallion" id="btn" title="Revelar dito">
-    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="40" cy="40" r="28" stroke="#9c8e7e" stroke-width="1" stroke-dasharray="3 3"/>
-      <path d="M18 40 Q27 24 40 22 Q53 24 62 40 Q53 56 40 58 Q27 56 18 40Z" stroke="#9c8e7e" stroke-width="0.9" fill="none" opacity="0.55"/>
-      <circle cx="40" cy="40" r="4.5" fill="#9c8e7e" opacity="0.8"/>
-      <path d="M40 18 L40 12 M40 62 L40 68 M18 40 L12 40 M62 40 L68 40" stroke="#9c8e7e" stroke-width="0.9" stroke-linecap="round" opacity="0.35"/>
-      <path d="M26 26 L22 22 M54 26 L58 22 M26 54 L22 58 M54 54 L58 58" stroke="#9c8e7e" stroke-width="0.7" stroke-linecap="round" opacity="0.22"/>
-    </svg>
+  <button class="medallion" id="btn" title="Reveal">
+    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="28" stroke="#9c8e7e" stroke-width="1" stroke-dasharray="3 3"/><path d="M18 40 Q27 24 40 22 Q53 24 62 40 Q53 56 40 58 Q27 56 18 40Z" stroke="#9c8e7e" stroke-width="0.9" fill="none" opacity="0.55"/><circle cx="40" cy="40" r="4.5" fill="#9c8e7e" opacity="0.8"/><path d="M40 18 L40 12 M40 62 L40 68 M18 40 L12 40 M62 40 L68 40" stroke="#9c8e7e" stroke-width="0.9" stroke-linecap="round" opacity="0.35"/></svg>
   </button>
-  <span class="btn-label">Revelar sabedoria</span>
+  <span class="btn-label" id="btnLabel">Revelar sabedoria</span>
 </div>
-
 <div class="quote-card" id="quoteCard">
-  <button class="star-btn" id="starBtn" title="Salvar nos favoritos">
-    <svg viewBox="0 0 24 24"><path class="star-shape" d="M12 .9l3.3 6.7 7.4 1-5.4 5.2 1.3 7.3L12 18.9 5.4 21.1l1.3-7.3L1.3 8.6l7.4-1z"/></svg>
-  </button>
+  <button class="star-btn" id="starBtn"><svg viewBox="0 0 24 24"><path class="star-shape" d="M12 .9l3.3 6.7 7.4 1-5.4 5.2 1.3 7.3L12 18.9 5.4 21.1l1.3-7.3L1.3 8.6l7.4-1z"/></svg></button>
   <p class="quote-text" id="quoteText"></p>
   <p class="quote-source" id="quoteSource"></p>
 </div>
-
 <div class="breakdown-card" id="breakdownCard">
-  <p class="card-label">O que Marcus quis dizer</p>
+  <p class="card-label" id="cardLabel">O que ele quis dizer</p>
   <p class="breakdown-text" id="breakdownText"></p>
+  <button class="listen-btn" id="listenBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+    <span id="listenLabel">Ouvir</span>
+  </button>
 </div>
-
 <div class="overlay" id="overlay">
   <div class="panel">
     <div class="panel-head">
-      <span class="panel-title">Meus Favoritos</span>
-      <button class="close-btn" id="closeBtn" title="Fechar">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-      </button>
+      <span class="panel-title" id="panelTitle">Meus Favoritos</span>
+      <button class="close-btn" id="closeBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div id="favList"></div>
   </div>
 </div>
 
 <script>
-var QUOTES = [
-  { id:"q1", livro:4, dito:3, text:"Você tem poder sobre sua mente, não sobre os acontecimentos externos. Perceba isso e encontrará força.", breakdown:"A força não vem de controlar o mundo, mas de governar a própria reação a ele. Os eventos chegam sem pedir licença; o que você faz com eles é inteiramente seu. Quando para de lutar contra o incontrolável e foca no que depende de você, encontra uma calma que nada externo pode tirar." },
-  { id:"q2", livro:5, dito:16, text:"A alma torna-se tingida pela cor de seus pensamentos.", breakdown:"Você se torna aquilo em que pensa repetidamente. Os pensamentos não são visitantes neutros: vão pintando o caráter, dia após dia. Cuidar do que ocupa a mente é, no fundo, cuidar de quem você está se tornando." },
-  { id:"q3", livro:9, dito:35, text:"Perda nada mais é do que mudança, e mudança é o deleite da Natureza.", breakdown:"Aquilo que chamamos de perda é só a natureza fazendo o que sempre fez: transformar uma coisa em outra. Nada se destrói, apenas se rearranja. Quando você vê a mudança como o ritmo natural do mundo, e não como uma agressão pessoal, o medo de perder afrouxa." },
-  { id:"q4", livro:5, dito:20, text:"O obstáculo no caminho torna-se o caminho. O que obstrui a ação faz avançar a ação.", breakdown:"Aquilo que bloqueia sua ação pode virar o próprio combustível dela. A dificuldade não é um desvio da vida virtuosa; é a ocasião exata para praticá-la. O que impede pode redirecionar, e o que atrapalha pode ensinar." },
-  { id:"q5", livro:7, dito:69, text:"Viva como se cada dia pudesse ser o último: sem agitação, sem torpor, sem dissimulação.", breakdown:"Saber que o tempo é finito não deve gerar pânico nem paralisia, mas clareza. Agir sem ansiedade, sem preguiça e sem fingimento é viver cada dia como ele merece. A morte como pano de fundo torna o presente mais honesto." },
-  { id:"q6", livro:3, dito:7, text:"Nunca considere nada vantajoso se para isso você precisar quebrar sua palavra ou perder seu respeito próprio.", breakdown:"Nenhum ganho vale o preço da própria integridade. Se para conseguir algo você precisa trair sua palavra ou se desrespeitar, esse algo já vem com prejuízo embutido. O verdadeiro lucro é continuar sendo alguém que você admira." },
-  { id:"q7", livro:4, dito:3, text:"O universo é mudança; nossa vida é o que nossos pensamentos fazem dela.", breakdown:"O mundo lá fora é fluxo constante e indiferente; o sentido nasce dentro, na forma como interpretamos o que acontece. A mesma situação pode ser tragédia ou aprendizado, dependendo do pensamento que a recebe. Você não escolhe os fatos, mas escolhe o que faz deles." },
-  { id:"q8", livro:12, dito:17, text:"Se não é certo, não faça; se não é verdadeiro, não diga.", breakdown:"Uma regra simples para a conduta: ação guiada pela justiça, fala guiada pela verdade. Antes de agir, pergunte se é correto; antes de falar, se é verdadeiro. Viver bem é, em grande parte, essa disciplina constante de filtro." },
-  { id:"q9", livro:6, dito:39, text:"Aceite as coisas a que o destino te amarra e ame as pessoas com quem o destino te faz viver.", breakdown:"Não escolhemos boa parte das circunstâncias nem das pessoas que cruzam nosso caminho. A sabedoria está em aceitar o que foi dado e, mais que tolerar, amar genuinamente quem está ao seu lado. Resistir ao próprio destino só multiplica o sofrimento; abraçá-lo é onde mora a paz." },
-  { id:"q10", livro:9, dito:13, text:"Hoje escapei de toda circunstância opressora; ou melhor, expulsei-a de mim, pois ela não estava fora, mas dentro, nos meus julgamentos.", breakdown:"O que nos oprime quase nunca é o fato em si, e sim a opinião que formamos sobre ele. A circunstância não estava do lado de fora: estava na sua cabeça, no julgamento que você fez. Retire o julgamento e a opressão desaparece junto." },
-  { id:"q11", livro:4, dito:3, text:"Tudo que você ouve é uma opinião, não um fato. Tudo que você vê é uma perspectiva, não a verdade.", breakdown:"O que chega até nós já vem filtrado por pontos de vista, inclusive o nosso. Confundir opinião com fato e perspectiva com verdade nos torna rígidos e cegos. Lembrar dessa distância gera humildade e abre espaço para enxergar melhor." },
-  { id:"q12", livro:6, dito:2, text:"Quando acordar pela manhã, pense no precioso privilégio que é estar vivo: respirar, pensar, sentir, amar.", breakdown:"Acordar não é garantido; é um presente que recebemos sem merecer. Começar o dia reconhecendo o privilégio de respirar, pensar e amar muda completamente o tom de tudo o que vem depois. A gratidão pela própria existência é o antídoto contra a indiferença." },
-  { id:"q13", livro:10, dito:16, text:"Não perca mais tempo discutindo como deve ser um homem bom. Seja um.", breakdown:"A virtude não se prova em debates, mas em atos. Gastar energia teorizando sobre o bem é fugir da única coisa que importa: praticá-lo. Pare de descrever a pessoa que deveria ser e simplesmente seja ela, agora." },
-  { id:"q14", livro:4, dito:35, text:"Tudo é efêmero: aquele que lembra e aquilo que é lembrado.", breakdown:"Não só as coisas passam: quem as guarda na memória também passa. A fama e a lembrança que tanto perseguimos são tão perecíveis quanto nós. Reconhecer isso liberta da vaidade e devolve o foco ao que importa de fato: viver bem agora." }
+var PHIL=[
+{id:"marcus",label:{pt:"Marcus Aurelius",en:"Marcus Aurelius"},title:{pt:"Meditações",en:"Meditations"},quotes:[
+{id:"m1",ref:"Meditations 4.3",pt:"Você tem poder sobre sua mente, não sobre os acontecimentos externos. Perceba isso e encontrará força.",pt_b:"A força não vem de controlar o mundo, mas de governar a própria reação a ele. Os eventos chegam sem pedir licença; o que você faz com eles é inteiramente seu.",en:"You have power over your mind, not outside events. Realize this, and you will find strength.",en_b:"True strength does not come from controlling the world, but from governing your own reaction to it. Events arrive without permission; what you do with them is entirely yours."},
+{id:"m2",ref:"Meditations 5.16",pt:"A alma torna-se tingida pela cor de seus pensamentos.",pt_b:"Você se torna aquilo em que pensa repetidamente. Os pensamentos vão pintando o caráter, dia após dia. Cuidar do que ocupa a mente é cuidar de quem você está se tornando.",en:"The soul becomes dyed with the color of its thoughts.",en_b:"You become what you think about repeatedly. Thoughts paint your character day after day. To care for what occupies your mind is to care for who you are becoming."},
+{id:"m3",ref:"Meditations 9.35",pt:"Perda nada mais é do que mudança, e mudança é o deleite da Natureza.",pt_b:"Aquilo que chamamos de perda é só a natureza transformando uma coisa em outra. Nada se destrói, apenas se rearranja. Quando a mudança é vista como ritmo natural, o medo de perder afrouxa.",en:"Loss is nothing else but change, and change is Nature's delight.",en_b:"What we call loss is just nature turning one thing into another. Nothing is destroyed, only rearranged. When change is seen as natural rhythm, the fear of losing loosens its grip."},
+{id:"m4",ref:"Meditations 5.20",pt:"O obstáculo no caminho torna-se o caminho. O que obstrui a ação faz avançar a ação.",pt_b:"O que bloqueia sua ação pode virar o combustível dela. A dificuldade não é desvio da vida virtuosa; é a ocasião exata para praticá-la.",en:"The impediment to action advances action. What stands in the way becomes the way.",en_b:"What blocks your path can become the very fuel for moving forward. Difficulty is not a detour from the virtuous life; it is the exact occasion to practice it."},
+{id:"m5",ref:"Meditations 7.69",pt:"Viva como se cada dia pudesse ser o último: sem agitação, sem torpor, sem dissimulação.",pt_b:"Saber que o tempo é finito deve gerar clareza, não pânico. Agir sem ansiedade, sem preguiça e sem fingimento é viver cada dia como ele merece.",en:"Live each day as if it were your last: without frenzy, without apathy, without pretense.",en_b:"Knowing time is finite should bring clarity, not panic. Acting without anxiety, without laziness, and without pretense is living each day as it deserves."},
+{id:"m6",ref:"Meditations 3.7",pt:"Nunca considere nada vantajoso se para isso você precisar quebrar sua palavra ou perder seu respeito próprio.",pt_b:"Nenhum ganho vale o preço da própria integridade. Se para conseguir algo você precisa trair sua palavra, esse algo já vem com prejuízo embutido.",en:"Never value anything as profitable that compels you to break your word or lose your self-respect.",en_b:"No gain is worth the price of your own integrity. If getting something requires betraying your word, it already comes at a loss."},
+{id:"m7",ref:"Meditations 4.3",pt:"O universo é mudança; nossa vida é o que nossos pensamentos fazem dela.",pt_b:"O mundo lá fora é fluxo constante; o sentido nasce dentro, na forma como interpretamos o que acontece. Você não escolhe os fatos, mas escolhe o que faz deles.",en:"The universe is change; our life is what our thoughts make it.",en_b:"The outside world is constant flux; meaning is born within, in how we interpret what happens. You do not choose the facts, but you choose what you make of them."},
+{id:"m8",ref:"Meditations 12.17",pt:"Se não é certo, não faça; se não é verdadeiro, não diga.",pt_b:"Ação guiada pela justiça, fala guiada pela verdade. Viver bem é essa disciplina constante de filtro.",en:"If it is not right, do not do it; if it is not true, do not say it.",en_b:"Action guided by justice, speech guided by truth. Living well is this constant discipline of filtering."},
+{id:"m9",ref:"Meditations 6.39",pt:"Aceite as coisas a que o destino te amarra e ame as pessoas com quem o destino te faz viver.",pt_b:"A sabedoria está em aceitar o que foi dado e amar genuinamente quem está ao seu lado. Resistir ao próprio destino só multiplica o sofrimento.",en:"Accept the things to which fate binds you, and love the people with whom fate brings you together.",en_b:"Wisdom lies in accepting what is given and genuinely loving those beside you. Resisting your own fate only multiplies suffering."},
+{id:"m10",ref:"Meditations 9.13",pt:"Hoje escapei de toda circunstância opressora; ou melhor, expulsei-a de mim, pois ela não estava fora, mas dentro, nos meus julgamentos.",pt_b:"O que nos oprime quase nunca é o fato em si, mas a opinião que formamos sobre ele. Retire o julgamento e a opressão desaparece.",en:"Today I escaped all oppressive circumstances, or rather, I cast them out, for they were not outside me but within, in my own judgments.",en_b:"What oppresses us is almost never the fact itself, but the opinion we form about it. Remove the judgment and the oppression vanishes."},
+{id:"m11",ref:"Meditations 6.2",pt:"Quando acordar pela manhã, pense no precioso privilégio que é estar vivo: respirar, pensar, sentir, amar.",pt_b:"Acordar não é garantido; é um presente. A gratidão pela própria existência é o antídoto contra a indiferença.",en:"When you arise in the morning, think of what a precious privilege it is to be alive: to breathe, to think, to feel, to love.",en_b:"Waking up is not guaranteed; it is a gift. Gratitude for existence is the antidote to indifference."},
+{id:"m12",ref:"Meditations 10.16",pt:"Não perca mais tempo discutindo como deve ser um homem bom. Seja um.",pt_b:"A virtude não se prova em debates, mas em atos. Pare de descrever a pessoa que deveria ser e simplesmente seja ela, agora.",en:"Waste no more time arguing about what a good man should be. Be one.",en_b:"Virtue is not proved in debates but in actions. Stop describing the person you should be and simply be that person, now."},
+{id:"m13",ref:"Meditations 4.35",pt:"Tudo é efêmero: aquele que lembra e aquilo que é lembrado.",pt_b:"Não só as coisas passam: quem as guarda na memória também passa. Reconhecer isso liberta da vaidade e devolve o foco ao que importa: viver bem agora.",en:"Everything is ephemeral: both the one who remembers and that which is remembered.",en_b:"Not only do things pass: the one who holds them in memory passes too. Recognizing this frees us from vanity and returns focus to what truly matters: living well now."},
+{id:"m14",ref:"Meditations 4.3",pt:"Tudo que você ouve é uma opinião, não um fato. Tudo que você vê é uma perspectiva, não a verdade.",pt_b:"O que chega até nós já vem filtrado por pontos de vista. Confundir opinião com fato nos torna rígidos e cegos.",en:"Everything you hear is an opinion, not a fact. Everything you see is a perspective, not the truth.",en_b:"What reaches us already comes filtered through points of view. Confusing opinion with fact makes us rigid and blind."}
+]},
+{id:"epictetus",label:{pt:"Epicteto",en:"Epictetus"},title:{pt:"Discursos",en:"Discourses"},quotes:[
+{id:"e1",ref:"Enchiridion 1",pt:"Há coisas que estão ao nosso alcance e coisas que não estão. Ao nosso alcance estão a opinião, o impulso, o desejo e a aversão.",pt_b:"A liberdade começa quando você distingue o que pode controlar do que não pode. Suas opiniões e reações são suas. Todo o resto está fora do seu domínio. Tentar controlar o que não lhe pertence é a raiz de toda perturbação.",en:"Some things are within our power, while others are not. Within our power are opinion, desire, and aversion.",en_b:"Freedom begins when you distinguish what you can control from what you cannot. Your opinions and reactions are yours. Everything else lies outside your domain. Trying to control what does not belong to you is the root of all disturbance."},
+{id:"e2",ref:"Enchiridion 5",pt:"Não são as coisas que nos perturbam, mas os julgamentos que fazemos sobre elas.",pt_b:"O evento em si é neutro. O sofrimento nasce da história que você conta a si mesmo. Mude o julgamento e a perturbação perde seu poder.",en:"It is not things that disturb us, but our judgments about things.",en_b:"The event itself is neutral. Suffering is born from the story you tell yourself. Change the judgment and the disturbance loses its power."},
+{id:"e3",ref:"Enchiridion 8",pt:"Não exija que as coisas aconteçam como você deseja. Deseje que aconteçam como acontecem, e tudo ficará bem.",pt_b:"A frustração é a distância entre a expectativa e a realidade. Ao alinhar sua vontade com o que de fato acontece, você elimina essa distância. Não é passividade; é inteligência.",en:"Do not seek to have events happen as you wish, but wish them to happen as they do, and all will be well.",en_b:"Frustration is the distance between expectation and reality. By aligning your will with what actually happens, you eliminate that distance. This is not passivity; it is intelligence."},
+{id:"e4",ref:"Enchiridion 17",pt:"Lembre-se de que você é um ator numa peça. O autor é quem determina sua duração e seu tema.",pt_b:"Você não escreveu o roteiro da sua vida. O que está ao seu alcance é representar seu papel com excelência, seja ele curto ou longo.",en:"Remember that you are an actor in a play, the character of which is determined by the author.",en_b:"You did not write the script of your life. What is within your power is to play your role with excellence, whether short or long."},
+{id:"e5",ref:"Enchiridion 9",pt:"A doença é um impedimento para o corpo, mas não para a vontade, a menos que ela consinta.",pt_b:"O corpo tem limites, mas a mente só é limitada se concordar em ser. O corpo pode ser preso; a vontade, só se ela se render.",en:"Sickness is a hindrance to the body, but not to the will, unless the will itself consents.",en_b:"The body has limits, but the mind is only limited if it agrees to be. The body can be imprisoned; the will can only surrender itself."},
+{id:"e6",ref:"Discourses 4.1",pt:"Nenhum homem é livre se não é senhor de si mesmo.",pt_b:"A liberdade verdadeira não depende de circunstâncias externas, mas do domínio sobre os próprios impulsos. Quem é escravo dos seus desejos não é livre, mesmo sem corrente alguma.",en:"No man is free who is not master of himself.",en_b:"True freedom does not depend on external circumstances but on mastery over one's own impulses. Whoever is enslaved by desires is not free, even without visible chains."},
+{id:"e7",ref:"Discourses 3.23",pt:"Primeiro diga a si mesmo o que você seria; depois faça o que precisa fazer.",pt_b:"A mudança começa com uma declaração interna de identidade. Decida quem você quer ser, e só então as ações ganham direção e sentido.",en:"First say to yourself what you would be; then do what you have to do.",en_b:"Change begins with an internal declaration of identity. Decide who you want to be, and only then do actions gain direction and meaning."},
+{id:"e8",ref:"Discourses 1.24",pt:"A dificuldade mostra quem cada pessoa realmente é.",pt_b:"É fácil ser virtuoso quando tudo vai bem. A adversidade é o teste real do caráter. É no momento de pressão que descobrimos quem de fato somos.",en:"Difficulty shows what men are.",en_b:"It is easy to be virtuous when everything goes well. Adversity is the real test of character. It is in the moment of pressure that we discover who we truly are."},
+{id:"e9",ref:"Discourses 3.24",pt:"Riqueza não consiste em ter muitas posses, mas em ter poucas necessidades.",pt_b:"Quem precisa de pouco já é rico. Cada desejo a menos é uma liberdade a mais.",en:"Wealth consists not in having great possessions, but in having few wants.",en_b:"Whoever needs little is already rich. Every desire less is one freedom more."},
+{id:"e10",ref:"Discourses 2.1",pt:"Somente os educados são livres.",pt_b:"Educação aqui não é diploma — é a capacidade de pensar com clareza e governar a si mesmo. Sem isso, você é conduzido por impulsos e chama isso de liberdade.",en:"Only the educated are free.",en_b:"Education here does not mean degrees — it is the ability to think clearly and govern yourself. Without it, you are driven by impulses and call that freedom."},
+{id:"e11",ref:"Enchiridion 33",pt:"Se alguém te irrita, saiba que é a tua própria opinião que te irrita.",pt_b:"Ninguém tem o poder de te irritar sem a sua permissão. Entre o evento e a sua reação existe um julgamento seu — é esse julgamento que produz a irritação.",en:"If someone irritates you, know that it is your own opinion that has irritated you.",en_b:"No one has the power to irritate you without your permission. Between the event and your reaction lies your own judgment — it is that judgment that produces the irritation."},
+{id:"e12",ref:"Enchiridion 46",pt:"Em todas as circunstâncias, lembre-se de voltar-se para si mesmo e buscar qual recurso você tem para lidar com a situação.",pt_b:"Cada desafio pede que você olhe para dentro antes de olhar para fora. Seus recursos internos — paciência, coragem, razão — já estão lá.",en:"In every circumstance, remember to turn to yourself and seek what resource you have for dealing with it.",en_b:"Every challenge asks you to look inward before looking outward. Your internal resources — patience, courage, reason — are already there."}
+]}
 ];
 
-function findQuote(id) { for (var i=0;i<QUOTES.length;i++){ if(QUOTES[i].id===id) return QUOTES[i]; } return null; }
+var LABELS={
+  pt:{eyebrow:"Estoicismo",btnL:"Revelar sabedoria",cardL:"O que ele quis dizer",listen:"Ouvir",stop:"Parar",favL:"Favoritos",panelT:"Meus Favoritos",empty:"Você ainda não salvou nenhum dito. Toque na estrela para guardá-lo aqui.",langBtn:"EN"},
+  en:{eyebrow:"Stoicism",btnL:"Reveal wisdom",cardL:"What he meant",listen:"Listen",stop:"Stop",favL:"Favorites",panelT:"My Favorites",empty:"No quotes saved yet. Tap the star on a quote to save it here.",langBtn:"PT"}
+};
 
-// ---- Favorites storage (localStorage with safe fallback) ----
-function loadFavs() { try { var r = localStorage.getItem('stoic_favs'); if (r) return JSON.parse(r); } catch (e) {} return []; }
-function persistFavs() { try { localStorage.setItem('stoic_favs', JSON.stringify(favs)); } catch (e) {} }
-var favs = loadFavs();
-function isFav(id) { return favs.indexOf(id) >= 0; }
-function toggleFav(id) {
-  var i = favs.indexOf(id);
-  if (i >= 0) favs.splice(i, 1); else favs.push(id);
-  persistFavs();
-  updateFavCount();
+function findQuote(id){for(var p=0;p<PHIL.length;p++){var qs=PHIL[p].quotes;for(var i=0;i<qs.length;i++){if(qs[i].id===id)return{phil:PHIL[p],quote:qs[i]};}}return null;}
+function qText(q){return lang==="pt"?q.pt:q.en;}
+function qBreak(q){return lang==="pt"?q.pt_b:q.en_b;}
+
+var lang="pt";var philIdx=0;var lastIndex=-1;var isLoading=false;var currentQuote=null;var speaking=false;var TTS_PROXY_URL="";var currentAudio=null;
+
+function loadFavs(){try{var r=localStorage.getItem('stoic_favs');if(r)return JSON.parse(r);}catch(e){}return[];}
+function persistFavs(){try{localStorage.setItem('stoic_favs',JSON.stringify(favs));}catch(e){}}
+var favs=loadFavs();
+function isFav(id){return favs.indexOf(id)>=0;}
+function toggleFav(id){var i=favs.indexOf(id);if(i>=0)favs.splice(i,1);else favs.push(id);persistFavs();updateFavCount();}
+
+var langBtnEl=document.getElementById('langBtn'),eyebrowEl=document.getElementById('eyebrow'),titleH1=document.getElementById('titleH1'),philNameEl=document.getElementById('philName'),btnLabelEl=document.getElementById('btnLabel'),cardLabelEl=document.getElementById('cardLabel'),listenLabel=document.getElementById('listenLabel'),favLabelEl=document.getElementById('favLabel'),panelTitleEl=document.getElementById('panelTitle');
+var btn=document.getElementById('btn'),quoteCard=document.getElementById('quoteCard'),quoteText=document.getElementById('quoteText'),quoteSource=document.getElementById('quoteSource'),breakdownCard=document.getElementById('breakdownCard'),breakdownText=document.getElementById('breakdownText'),starBtn=document.getElementById('starBtn'),favOpen=document.getElementById('favOpen'),favCount=document.getElementById('favCount'),overlay=document.getElementById('overlay'),closeBtn=document.getElementById('closeBtn'),favList=document.getElementById('favList'),listenBtn=document.getElementById('listenBtn');
+
+var synth=window.speechSynthesis||null;var voices={pt:null,en:null};
+function voiceScore(v){var n=(v.name||'').toLowerCase();if(n.indexOf('premium')>=0)return 3;if(n.indexOf('enhanced')>=0)return 2;if(n.indexOf('compact')>=0)return 0;return 1;}
+function pickVoices(){if(!synth)return;var vs=synth.getVoices();var best={pt:{v:null,s:-1},en:{v:null,s:-1}};for(var i=0;i<vs.length;i++){var l=(vs[i].lang||'').toLowerCase();var sc=voiceScore(vs[i]);if(l.indexOf('pt')===0&&sc>best.pt.s){best.pt={v:vs[i],s:sc};}if(l.indexOf('en')===0&&sc>best.en.s){best.en={v:vs[i],s:sc};}}voices.pt=best.pt.v;voices.en=best.en.v;}
+if(synth){pickVoices();if(typeof synth.onvoiceschanged!=='undefined')synth.onvoiceschanged=pickVoices;}
+
+function setListenState(on){speaking=on;var L=LABELS[lang];if(on){listenBtn.classList.add('playing');listenLabel.textContent=L.stop;}else{listenBtn.classList.remove('playing');listenLabel.textContent=L.listen;}}
+function stopSpeak(){if(synth)synth.cancel();if(currentAudio){try{currentAudio.pause();}catch(e){}currentAudio=null;}setListenState(false);}
+function speakBrowser(txt){if(!synth){setListenState(false);return;}synth.cancel();var u=new SpeechSynthesisUtterance(txt);u.lang=lang==='pt'?'pt-BR':'en-US';var v=voices[lang];if(v)u.voice=v;u.rate=lang==='pt'?0.95:0.9;u.pitch=1;u.onend=function(){setListenState(false);};u.onerror=function(){setListenState(false);};synth.speak(u);setListenState(true);}
+async function speakCurrent(){if(!currentQuote)return;var txt=qText(currentQuote)+'. '+qBreak(currentQuote);if(TTS_PROXY_URL){currentAudio=new Audio();setListenState(true);listenLabel.textContent='...';try{var res=await fetch(TTS_PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:txt})});if(!res.ok)throw new Error('proxy '+res.status);var blob=await res.blob();currentAudio.src=URL.createObjectURL(blob);currentAudio.onended=function(){setListenState(false);currentAudio=null;};currentAudio.onerror=function(){setListenState(false);currentAudio=null;};listenLabel.textContent=LABELS[lang].stop;await currentAudio.play();return;}catch(e){console.error('Proxy fail:',e);currentAudio=null;}}speakBrowser(txt);}
+listenBtn.addEventListener('click',function(){if(speaking)stopSpeak();else speakCurrent();});
+
+function updateFavCount(){favCount.textContent=favs.length;}
+function updateStarState(){if(currentQuote&&isFav(currentQuote.id))starBtn.classList.add('active');else starBtn.classList.remove('active');}
+
+function curPhil(){return PHIL[philIdx];}
+function updateLangUI(){
+  var L=LABELS[lang];var ph=curPhil();
+  langBtnEl.textContent=L.langBtn;eyebrowEl.textContent=L.eyebrow;
+  titleH1.innerHTML=ph.title[lang]+'<span class="toggle-hint">&#9662;</span>';
+  philNameEl.textContent=ph.label[lang];
+  btnLabelEl.textContent=L.btnL;cardLabelEl.textContent=L.cardL;favLabelEl.textContent=L.favL;panelTitleEl.textContent=L.panelT;
+  if(!speaking)listenLabel.textContent=L.listen;
+  if(currentQuote){quoteText.textContent=qText(currentQuote);quoteSource.textContent='- '+curPhil().label[lang]+', '+currentQuote.ref;breakdownText.textContent=qBreak(currentQuote);}
 }
 
-var lastIndex = -1;
-var isLoading = false;
-var currentQuote = null;
+function wait(ms){return new Promise(function(r){setTimeout(r,ms);});}
 
-var btn = document.getElementById('btn');
-var quoteCard = document.getElementById('quoteCard');
-var quoteText = document.getElementById('quoteText');
-var quoteSource = document.getElementById('quoteSource');
-var breakdownCard = document.getElementById('breakdownCard');
-var breakdownText = document.getElementById('breakdownText');
-var starBtn = document.getElementById('starBtn');
-var favOpen = document.getElementById('favOpen');
-var favCount = document.getElementById('favCount');
-var overlay = document.getElementById('overlay');
-var closeBtn = document.getElementById('closeBtn');
-var favList = document.getElementById('favList');
-
-function updateFavCount() { favCount.textContent = favs.length; }
-function updateStarState() {
-  if (currentQuote && isFav(currentQuote.id)) starBtn.classList.add('active');
-  else starBtn.classList.remove('active');
-}
-
-function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
-
-async function streamText(el, text, delay) {
-  el.innerHTML = '';
-  var cursor = document.createElement('span');
-  cursor.className = 'cursor';
-  el.appendChild(cursor);
-  for (var i = 0; i < text.length; i++) {
-    el.insertBefore(document.createTextNode(text[i]), cursor);
-    await wait(delay);
-  }
-  cursor.remove();
-}
-
-btn.addEventListener('click', async function () {
-  if (isLoading) return;
-  isLoading = true;
-
-  var idx;
-  do { idx = Math.floor(Math.random() * QUOTES.length); } while (idx === lastIndex && QUOTES.length > 1);
-  lastIndex = idx;
-  currentQuote = QUOTES[idx];
-
-  quoteCard.classList.remove('visible');
-  breakdownCard.classList.remove('visible');
-  quoteText.textContent = '';
-  quoteSource.textContent = '';
-  breakdownText.textContent = '';
-
-  await wait(80);
-  updateStarState();
-  quoteCard.classList.add('visible');
-  await wait(350);
-  await streamText(quoteText, currentQuote.text, 22);
-  quoteSource.textContent = '- Marcus Aurelius, Meditacoes ' + currentQuote.livro + '.' + currentQuote.dito;
-
-  breakdownCard.classList.add('visible');
-  await wait(300);
-  await streamText(breakdownText, currentQuote.breakdown, 14);
-
-  isLoading = false;
+btn.addEventListener('click',async function(){
+  if(isLoading)return;isLoading=true;stopSpeak();
+  var qs=curPhil().quotes;var idx;
+  do{idx=Math.floor(Math.random()*qs.length);}while(idx===lastIndex&&qs.length>1);
+  lastIndex=idx;currentQuote=qs[idx];
+  quoteCard.classList.remove('visible');breakdownCard.classList.remove('visible');
+  quoteText.textContent='';quoteSource.textContent='';breakdownText.textContent='';
+  await wait(80);updateStarState();quoteCard.classList.add('visible');await wait(200);
+  quoteText.textContent=qText(currentQuote);
+  quoteSource.textContent='- '+curPhil().label[lang]+', '+currentQuote.ref;
+  breakdownCard.classList.add('visible');await wait(200);
+  breakdownText.textContent=qBreak(currentQuote);
+  isLoading=false;
 });
 
-starBtn.addEventListener('click', function () {
-  if (!currentQuote) return;
-  toggleFav(currentQuote.id);
-  updateStarState();
+starBtn.addEventListener('click',function(){if(!currentQuote)return;toggleFav(currentQuote.id);updateStarState();});
+
+titleH1.addEventListener('click',function(){
+  stopSpeak();philIdx=(philIdx+1)%PHIL.length;lastIndex=-1;
+  currentQuote=null;
+  quoteCard.classList.remove('visible');breakdownCard.classList.remove('visible');
+  quoteText.textContent='';quoteSource.textContent='';breakdownText.textContent='';
+  updateLangUI();
 });
 
-function renderFavs() {
-  favList.innerHTML = '';
-  if (favs.length === 0) {
-    var e = document.createElement('div');
-    e.className = 'empty';
-    e.textContent = 'Você ainda não salvou nenhum dito. Toque na estrela de um dito para guardá-lo aqui.';
-    favList.appendChild(e);
-    return;
-  }
-  for (var i = 0; i < favs.length; i++) {
-    var q = findQuote(favs[i]);
-    if (!q) continue;
-    var item = document.createElement('div');
-    item.className = 'fav-item';
+langBtnEl.addEventListener('click',function(){stopSpeak();lang=lang==='pt'?'en':'pt';updateLangUI();});
 
-    var ref = document.createElement('div');
-    ref.className = 'fav-ref';
-    ref.textContent = 'Livro ' + q.livro + ' / dito ' + q.dito;
+var CHEVRON_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
 
-    var quote = document.createElement('div');
-    quote.className = 'fav-quote';
-    quote.textContent = q.text;
-
-    var brk = document.createElement('div');
-    brk.className = 'fav-break';
-    brk.textContent = q.breakdown;
-
-    var rm = document.createElement('button');
-    rm.className = 'fav-remove';
-    rm.title = 'Remover dos favoritos';
-    rm.innerHTML = '<svg viewBox="0 0 24 24"><path class="star-shape" d="M12 .9l3.3 6.7 7.4 1-5.4 5.2 1.3 7.3L12 18.9 5.4 21.1l1.3-7.3L1.3 8.6l7.4-1z"/></svg>';
-    (function (id) {
-      rm.addEventListener('click', function () {
-        toggleFav(id);
-        if (currentQuote && currentQuote.id === id) updateStarState();
-        renderFavs();
-      });
-    })(q.id);
-
-    item.appendChild(ref);
-    item.appendChild(quote);
-    item.appendChild(brk);
-    item.appendChild(rm);
-    favList.appendChild(item);
+function renderFavs(){
+  favList.innerHTML='';
+  if(favs.length===0){var e=document.createElement('div');e.className='empty';e.textContent=LABELS[lang].empty;favList.appendChild(e);return;}
+  for(var i=0;i<favs.length;i++){
+    var found=findQuote(favs[i]);if(!found)continue;var q=found.quote;var ph=found.phil;
+    var item=document.createElement('div');item.className='fav-item';
+    var head=document.createElement('div');head.className='fav-head';
+    var body=document.createElement('div');body.className='fav-body';
+    var ref=document.createElement('div');ref.className='fav-ref';ref.textContent=ph.label[lang]+' / '+q.ref;
+    var quote=document.createElement('div');quote.className='fav-quote';quote.textContent=qText(q);
+    var chev=document.createElement('div');chev.className='fav-chevron';chev.innerHTML=CHEVRON_SVG;
+    body.appendChild(ref);body.appendChild(quote);head.appendChild(body);head.appendChild(chev);
+    var brk=document.createElement('div');brk.className='fav-break';brk.textContent=qBreak(q);
+    var rm=document.createElement('button');rm.className='fav-remove';
+    rm.innerHTML='<svg viewBox="0 0 24 24"><path class="star-shape" d="M12 .9l3.3 6.7 7.4 1-5.4 5.2 1.3 7.3L12 18.9 5.4 21.1l1.3-7.3L1.3 8.6l7.4-1z"/></svg>';
+    (function(id){rm.addEventListener('click',function(ev){ev.stopPropagation();toggleFav(id);if(currentQuote&&currentQuote.id===id)updateStarState();renderFavs();});})(q.id);
+    (function(it){head.addEventListener('click',function(){it.classList.toggle('expanded');});})(item);
+    item.appendChild(head);item.appendChild(brk);item.appendChild(rm);favList.appendChild(item);
   }
 }
 
-favOpen.addEventListener('click', function () { renderFavs(); overlay.classList.add('open'); });
-closeBtn.addEventListener('click', function () { overlay.classList.remove('open'); });
-overlay.addEventListener('click', function (ev) { if (ev.target === overlay) overlay.classList.remove('open'); });
+favOpen.addEventListener('click',function(){renderFavs();overlay.classList.add('open');});
+closeBtn.addEventListener('click',function(){overlay.classList.remove('open');});
+overlay.addEventListener('click',function(ev){if(ev.target===overlay)overlay.classList.remove('open');});
 
-updateFavCount();
+updateFavCount();updateLangUI();
 </script>
 </body>
 </html>
