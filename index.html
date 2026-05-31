@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#f4efe8">
 <title>Stoicism</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Bebas+Neue&family=Gloock&family=Mukta+Malar:wght@300;400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Bebas+Neue&family=Gloock&family=Lateef:wght@300;400;500&display=swap');
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   :root{--bg:#f4efe8;--bg2:#ece5db;--sand:#d6cbba;--clay:#9c8e7e;--terracotta:#8b6f5e;--ink:#2a2420;--ink-soft:#4a3f38;--sage:#7a8c76;--white:#fbf8f4;--gold:#b8924e}
   body{background-color:var(--bg);color:var(--ink);font-family:'Playfair Display',Georgia,serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:60px 20px 90px;background-image:radial-gradient(ellipse at 60% 0%,#ece3d6 0%,transparent 60%),radial-gradient(ellipse at 10% 95%,#e4dbd0 0%,transparent 50%)}
@@ -39,22 +39,22 @@
   .medallion:active{transform:scale(.96)}
   .medallion svg{width:82px;height:82px;opacity:.7;transition:opacity .3s}
   .medallion:hover svg{opacity:1}
-  .btn-label{font-family:'Gloock',Georgia,serif;font-size:.82rem;letter-spacing:.15em;color:var(--clay);text-transform:uppercase}
+  .btn-label{font-family:'Bebas Neue',sans-serif;font-size:.82rem;letter-spacing:.32em;color:var(--clay);text-transform:uppercase}
 
   .quote-card,.breakdown-card{width:100%;max-width:720px;padding:36px 28px;opacity:0;transform:translateY(14px);transition:opacity .7s ease,transform .7s ease}
   .quote-card.visible,.breakdown-card.visible{opacity:1;transform:translateY(0)}
   .quote-card{background:var(--white);border:1px solid var(--sand);border-radius:3px;margin-bottom:22px;box-shadow:0 2px 22px rgba(140,110,90,.07);position:relative}
-  .star-btn{position:absolute;top:26px;right:28px;background:none;border:none;cursor:pointer;padding:4px;line-height:0;transition:transform .2s ease}
+  .star-btn{display:block;margin:0 auto 18px;background:none;border:none;cursor:pointer;padding:4px;line-height:0;transition:transform .2s ease}
   .star-btn:hover{transform:scale(1.15)}.star-btn:active{transform:scale(.9)}
   .star-btn svg{width:26px;height:26px}
   .star-btn .star-shape{fill:none;stroke:var(--clay);stroke-width:1.5;transition:fill .25s ease,stroke .25s ease}
   .star-btn.active .star-shape{fill:var(--gold);stroke:var(--gold)}
-  .quote-text{font-size:clamp(1.7rem,3.8vw,2.3rem);line-height:1.65;color:#4a3528;font-style:normal;font-weight:400;padding-right:30px;text-align:center;font-family:'Gloock',Georgia,serif}
-  .quote-source{margin-top:26px;font-family:'Gloock',Georgia,serif;font-size:.72rem;letter-spacing:.15em;color:var(--terracotta);text-align:center;opacity:.85}
+  .quote-text{font-size:clamp(1.7rem,3.8vw,2.3rem);line-height:1.65;color:#4a3528;font-style:normal;font-weight:400;text-align:center;font-family:'Gloock',Georgia,serif}
+  .quote-source{margin-top:26px;font-family:'Bebas Neue',sans-serif;font-size:.72rem;letter-spacing:.16em;color:var(--terracotta);text-align:center;opacity:.85}
 
   .breakdown-card{background:var(--bg2);border:1px solid var(--sand);border-left:3px solid var(--sage);border-radius:3px;transition:opacity .7s ease .18s,transform .7s ease .18s;box-shadow:0 2px 18px rgba(140,110,90,.05)}
-  .card-label{font-family:'Gloock',Georgia,serif;font-size:.78rem;letter-spacing:.15em;color:var(--sage);text-transform:uppercase;margin-bottom:22px}
-  .breakdown-text{font-size:clamp(1.1rem,2.4vw,1.32rem);line-height:1.9;color:var(--ink-soft);font-weight:400;font-family:'Mukta Malar',sans-serif}
+  .card-label{font-family:'Bebas Neue',sans-serif;font-size:.78rem;letter-spacing:normal;color:var(--sage);text-transform:uppercase;margin-bottom:22px}
+  .breakdown-text{font-size:clamp(1.1rem,2.4vw,1.32rem);line-height:1.9;color:var(--ink-soft);font-weight:400;font-family:'Lateef',serif}
   .breakdown-text p{margin:0 0 14px 0}
   .breakdown-text p:last-child{margin-bottom:0}
   .listen-btn{display:inline-flex;align-items:center;gap:9px;margin-top:28px;background:var(--white);border:1px solid var(--sand);border-radius:999px;padding:10px 20px;cursor:pointer;font-family:'Bebas Neue',sans-serif;font-size:.75rem;letter-spacing:.22em;text-transform:uppercase;color:var(--sage);transition:transform .2s ease,box-shadow .2s ease,color .2s ease,border-color .2s ease}
